@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import Header from './components/header'
+import Footer from './components/footer'
+import BestScore from './components/bestScore'
 import './App.css';
 
 class App extends Component {
@@ -15,6 +17,7 @@ class App extends Component {
       }
       board.push(cols);
     }
+    this.userInput = React.createRef();
     this.state={
       board,
       food : {
@@ -31,7 +34,8 @@ class App extends Component {
           x : 1,
           y : 0
         }
-      }
+      },
+      showStartButton : true
     }
   }
   
@@ -44,16 +48,26 @@ class App extends Component {
     return newFood;
   }
   
-  componentDidMount = () => {
+  // componentDidMount = () => {
+  //   setTimeout(()=> {
+  //     this.gameLoop()
+  //   },800);
+  // }
+
+  startGame = () => {
+    this.userInput.current.focus();
+    this.setState((state) => {
+      state.showStartButton= false;
+      return state;
+    },() => {
     setTimeout(()=> {
       this.gameLoop()
     },800);
-  }
-
+    });
+  }  
   gameLoop = () => {
       this.setState(({snake,food}) => {
         const hasEatenFood = this.hasEatenFood();
-        console.log(hasEatenFood);
         const nextState = {
           snake : {
             ...snake,
@@ -69,7 +83,7 @@ class App extends Component {
           return nextState;
         },() =>{
           const { snake } = this.state;
-          if (this.hitsEdge()) {
+          if (this.hitsEdge() || this.isTail(snake.head)) {
             this.setState({
               gameOver: true,
             });
@@ -77,7 +91,7 @@ class App extends Component {
           }
           setTimeout(()=> {
             this.gameLoop();
-          },400)
+          },snake.tail.length ? (400 / snake.tail.length) + 200 : 400)
         });
   }
 
@@ -118,6 +132,7 @@ class App extends Component {
   setDirection = (e) => {
     const {snake} = this.state
     if (e.keyCode === 38) { //upwards
+      if (snake.speed.y === 1) return;
       this.setState(({snake}) => {
         let newSnake = {
           snake : {
@@ -131,6 +146,7 @@ class App extends Component {
         return newSnake;
       })
     } else if (e.keyCode === 40) { //downwards
+      if (snake.speed.y === -1) return;
       this.setState(({snake}) => {
         let newSnake = {
           snake : {
@@ -144,6 +160,7 @@ class App extends Component {
         return newSnake;
       })
       } else if (e.keyCode === 39) { // rightwards
+        if (snake.speed.x === -1) return;
         this.setState(({snake}) => {
           let newSnake = {
             snake : {
@@ -157,6 +174,8 @@ class App extends Component {
           return newSnake;
         })
       } else if (e.keyCode === 37) { //left
+        if (snake.speed.x ===1) return;
+
         this.setState(({snake}) => {
           let newSnake = {
             snake : {
@@ -173,12 +192,12 @@ class App extends Component {
 }
 
   render() {
-    const {board,gameOver} = this.state;
+    const {board,gameOver,snake,showStartButton} = this.state;
     return (
       <div  className="App">
-      {
-        gameOver ? <h1>Game Over !!!</h1> :
-      <section tabIndex="0" onKeyDown={this.setDirection} className='board'>
+      <Header></Header>
+      <div className='boardContainer'>
+      <div tabIndex="1" onKeyDown={this.setDirection} className='board' ref={this.userInput}>
       {
         board.map((row,i) => (
           row.map( (cell) => {
@@ -196,8 +215,20 @@ class App extends Component {
         ))
         )
       }
-      </section>
+      <button tabIndex="-1" className={`button 
+      ${
+        showStartButton ? 'showButton' : 'hideButton' 
+      }`} onClick ={this.startGame} > Start Game</button> : ''
+      </div>
+      {
+        gameOver ? <h1 className ='gameOver'>Game Over !!!</h1> :''
       }
+      </div>
+      <div className='score'>
+        <BestScore currentScore = {snake.tail.length*5}></BestScore>
+        <span>  Score :{snake.tail.length*5}</span>
+      </div>
+      <Footer></Footer>
       </div>
     );
 }

@@ -10,13 +10,21 @@ class BestScore extends Component {
             storage.setItem('bestScore',0);
         }
         console.log('bestScore' + bestScore);
+        if(bestScore) {
         this.state = {
             bestScore : bestScore
+        }} else {
+            this.state = {
+                bestScore : 0
+            }
         }
     }
 
-    componentDidUpdate =(prevProps) => {
-        if (this.props.currentScore > prevProps.currentScore) {
+    componentDidUpdate =() => {
+        console.log("Current  "+ this.props.currentScore)
+        let storage = window.localStorage;
+        let bestScore = storage.getItem('bestScore');
+        if (this.props.currentScore > bestScore) {
             let storage = window.localStorage;
             storage.setItem('bestScore',this.props.currentScore)
             this.setState(()=> {

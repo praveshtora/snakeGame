@@ -6,7 +6,7 @@
 .App {
   display: block;
   justify-content: center;
-  background-color: #1E3E24;
+  background-color:black;
   width:100%;
   height: 100%;
   }
@@ -17,7 +17,7 @@
   display: grid;
   grid-template-columns: repeat(20, 1fr) ;
   grid-template-rows :repeat(20,1fr) ;
-  background: #53f321;
+  background: antiquewhite;
   margin-left: 35%;
   position: relative;
 }
@@ -51,6 +51,7 @@
 .header > span {
   font-size: 50px;
   margin-top :20px;
+  color: white;
 }
 
 .footer {
@@ -72,15 +73,17 @@
 }
 
 .score {
-  margin-left: 55%;
   color :#b3b325;
+  text-align: center;
+  width: 100%;
+  font-size: 20px;
 }
 
 .button {
   position: absolute;
-  top:50%;
-  left: 40%;
-  background-color: #d8ff00;
+  top:35%;
+  left: 39%;
+  background-color:darkgrey;
   border-radius: 3px;
   font-size: 20px
 }

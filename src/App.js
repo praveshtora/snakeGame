@@ -35,7 +35,7 @@ class App extends Component {
           y : 0
         }
       },
-      showStartButton : true
+      showStartButton : true,
     }
   }
   
@@ -57,7 +57,19 @@ class App extends Component {
   startGame = () => {
     this.userInput.current.focus();
     this.setState((state) => {
+      state.gameOver=false
       state.showStartButton= false;
+      state.snake = {
+        head : {
+          row : 10,
+          col : 10
+        },
+        tail :[],
+        speed : {
+          x : 1,
+          y : 0
+        }
+      };
       return state;
     },() => {
     setTimeout(()=> {
@@ -86,6 +98,7 @@ class App extends Component {
           if (this.hitsEdge() || this.isTail(snake.head)) {
             this.setState({
               gameOver: true,
+              showStartButton : true
             });
             return;
           }
